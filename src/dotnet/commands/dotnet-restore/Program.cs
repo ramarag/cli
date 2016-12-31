@@ -10,25 +10,8 @@ namespace Microsoft.DotNet.Tools.Restore
 {
     public class RestoreCommand
     {
-        public static int Run(string[] args)
+        internal static List<string> ParseRestoreOptions(CommandLineApplication cmd)
         {
-            DebugHelper.HandleDebugSwitch(ref args);
-
-            CommandLineApplication cmd = new CommandLineApplication(throwOnUnexpectedArg: false)
-            {
-                Name = "restore",
-                FullName = LocalizableStrings.AppFullName,
-                Description = LocalizableStrings.AppDescription,
-                HandleRemainingArguments = true,
-                ArgumentSeparatorHelpText = HelpMessageStrings.MSBuildAdditionalArgsHelpText
-            };
-
-            cmd.HelpOption("-h|--help");
-
-            var argRoot = cmd.Argument(
-                    $"[{LocalizableStrings.CmdArgument}]",
-                    LocalizableStrings.CmdArgumentDescription,
-                    multipleValues: true);
 
             var sourceOption = cmd.Option(
                     $"-s|--source <{LocalizableStrings.CmdSourceOption}>",
@@ -65,51 +48,74 @@ namespace Microsoft.DotNet.Tools.Restore
                 LocalizableStrings.CmdNoDependenciesOptionDescription,
                 CommandOptionType.NoValue);
 
+            var msbuildArgs = new List<string>() { };
+
+            if (sourceOption.HasValue())
+            {
+                msbuildArgs.Add($"/p:RestoreSources={string.Join("%3B", sourceOption.Values)}");
+            }
+
+            if (packagesOption.HasValue())
+            {
+                msbuildArgs.Add($"/p:RestorePackagesPath={packagesOption.Value()}");
+            }
+
+            if (disableParallelOption.HasValue())
+            {
+                msbuildArgs.Add($"/p:RestoreDisableParallel=true");
+            }
+
+            if (configFileOption.HasValue())
+            {
+                msbuildArgs.Add($"/p:RestoreConfigFile={configFileOption.Value()}");
+            }
+
+            if (noCacheOption.HasValue())
+            {
+                msbuildArgs.Add($"/p:RestoreNoCache=true");
+            }
+
+            if (ignoreFailedSourcesOption.HasValue())
+            {
+                msbuildArgs.Add($"/p:RestoreIgnoreFailedSources=true");
+            }
+
+            if (noDependenciesOption.HasValue())
+            {
+                msbuildArgs.Add($"/p:RestoreRecursive=false");
+            }
+
+            return msbuildArgs;
+
+        }
+        public static int Run(string[] args)
+        {
+            DebugHelper.HandleDebugSwitch(ref args);
+            CommandLineApplication cmd = new CommandLineApplication(throwOnUnexpectedArg: false)
+            {
+                Name = "restore",
+                FullName = LocalizableStrings.AppFullName,
+                Description = LocalizableStrings.AppDescription,
+                HandleRemainingArguments = true,
+                ArgumentSeparatorHelpText = HelpMessageStrings.MSBuildAdditionalArgsHelpText
+            };
+            cmd.HelpOption("-h|--help");
+
+            var msbuildArgs = ParseRestoreOptions(cmd);
+            var argRoot = cmd.Argument(
+                    $"[{LocalizableStrings.CmdArgument}]",
+                    LocalizableStrings.CmdArgumentDescription,
+                    multipleValues: true);
+
             CommandOption verbosityOption = MSBuildForwardingApp.AddVerbosityOption(cmd);
 
             cmd.OnExecute(() =>
             {
-                var msbuildArgs = new List<string>()
-                {
-                     "/NoLogo", 
-                     "/t:Restore", 
-                     "/ConsoleLoggerParameters:Verbosity=Minimal" 
-                };
 
-                if (sourceOption.HasValue())
-                {
-                    msbuildArgs.Add($"/p:RestoreSources={string.Join("%3B", sourceOption.Values)}");
-                }
+                msbuildArgs.Add("/NoLogo");
+                msbuildArgs.Add("/t:Restore");
+                msbuildArgs.Add("/ConsoleLoggerParameters:Verbosity=Minimal");
 
-                if (packagesOption.HasValue())
-                {
-                    msbuildArgs.Add($"/p:RestorePackagesPath={packagesOption.Value()}");
-                }
-
-                if (disableParallelOption.HasValue())
-                {
-                    msbuildArgs.Add($"/p:RestoreDisableParallel=true");
-                }
-
-                if (configFileOption.HasValue())
-                {
-                    msbuildArgs.Add($"/p:RestoreConfigFile={configFileOption.Value()}");
-                }
-
-                if (noCacheOption.HasValue())
-                {
-                    msbuildArgs.Add($"/p:RestoreNoCache=true");
-                }
-
-                if (ignoreFailedSourcesOption.HasValue())
-                {
-                    msbuildArgs.Add($"/p:RestoreIgnoreFailedSources=true");
-                }
-
-                if (noDependenciesOption.HasValue())
-                {
-                    msbuildArgs.Add($"/p:RestoreRecursive=false");
-                }
 
                 if (verbosityOption.HasValue())
                 {
@@ -118,7 +124,6 @@ namespace Microsoft.DotNet.Tools.Restore
 
                 // Add in arguments
                 msbuildArgs.AddRange(argRoot.Values);
-
                 // Add remaining arguments that the parser did not understand
                 msbuildArgs.AddRange(cmd.RemainingArguments);
 
