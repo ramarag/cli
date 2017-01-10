@@ -29,5 +29,9 @@
         public const string VersionSuffixOption = "VERSION_SUFFIX";
 
         public const string VersionSuffixOptionDescription = "Defines the value for the $(VersionSuffix) property in the project";
+    
+        public const string FxVersionOption = "FX_Vesrion";
+
+        public const string FxVersionOptionDescription = "The Microsoft.NETCore.App package version that will be used to run the assemblies";
     }
 }

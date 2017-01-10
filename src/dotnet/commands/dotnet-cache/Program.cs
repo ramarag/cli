@@ -39,7 +39,7 @@ namespace Microsoft.DotNet.Tools.Cache
                 CommandOptionType.SingleValue);
 
             CommandOption fxOption = app.Option(
-                $"--fx-version <{LocalizableStrings.OutputOption}>", LocalizableStrings.OutputOptionDescription,
+                $"--fx-version <{LocalizableStrings.FxVersionOption}>", LocalizableStrings.FxVersionOptionDescription,
                 CommandOptionType.SingleValue);
             CommandOption verbosityOption = MSBuildForwardingApp.AddVerbosityOption(app);
 

@@ -46,7 +46,7 @@ namespace Microsoft.DotNet.Tools.Cache
 
             if (!string.IsNullOrEmpty(OutputPath))
             {
-                msbuildArgs.Add($"/p:PublishDir={OutputPath}");
+                msbuildArgs.Add($"/p:ComposeDir={OutputPath}");
             }
 
             if (!string.IsNullOrEmpty(FxVersion))
