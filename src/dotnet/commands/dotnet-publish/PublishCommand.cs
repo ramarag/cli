@@ -17,6 +17,7 @@ namespace Microsoft.DotNet.Tools.Publish
         public string Configuration { get; set; }
         public string VersionSuffix { get; set; }
         public string Verbosity { get; set; }
+        public string FilterProfile { get; set; }
 
         public List<string> ExtraMSBuildArguments { get; set; }
 
@@ -58,6 +59,11 @@ namespace Microsoft.DotNet.Tools.Publish
             if (!string.IsNullOrEmpty(VersionSuffix))
             {
                 msbuildArgs.Add($"/p:VersionSuffix={VersionSuffix}");
+            }
+            
+            if (!string.IsNullOrEmpty(FilterProfile))
+            {
+                msbuildArgs.Add($"/p:FilterProjFile={FilterProfile}");
             }
 
             if (!string.IsNullOrEmpty(Verbosity))

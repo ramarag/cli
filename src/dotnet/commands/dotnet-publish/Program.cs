@@ -43,6 +43,10 @@ namespace Microsoft.DotNet.Tools.Publish
             CommandOption versionSuffixOption = app.Option(
                $"--version-suffix <{LocalizableStrings.VersionSuffixOption}>", LocalizableStrings.VersionSuffixOptionDescription,
                 CommandOptionType.SingleValue);
+            
+            CommandOption profileOption = app.Option(
+                $" --profile <{LocalizableStrings.ProfileOption}>", LocalizableStrings.ProfileOptionDescription,
+                CommandOptionType.SingleValue);
             CommandOption verbosityOption = MSBuildForwardingApp.AddVerbosityOption(app);
 
             app.OnExecute(() =>
@@ -55,6 +59,7 @@ namespace Microsoft.DotNet.Tools.Publish
                 publish.OutputPath = outputOption.Value();
                 publish.Configuration = configurationOption.Value();
                 publish.VersionSuffix = versionSuffixOption.Value();
+                publish.FilterProfile = profileOption.Value();
                 publish.Verbosity = verbosityOption.Value();
                 publish.ExtraMSBuildArguments = app.RemainingArguments;
 
