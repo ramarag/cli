@@ -29,5 +29,9 @@
         public const string VersionSuffixOption = "VERSION_SUFFIX";
 
         public const string VersionSuffixOptionDescription = "Defines the value for the $(VersionSuffix) property in the project.";
+
+        public const string ProfileProjOption = "profile.proj";
+
+        public const string ProfileProjOptionDescription = "The list of packages to be excluded from publish";
     }
 }
