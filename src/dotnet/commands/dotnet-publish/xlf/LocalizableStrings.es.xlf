@@ -73,6 +73,16 @@
         <target state="translated">Define el valor para la propiedad $(VersionSuffix) del proyecto.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ProfileProjOption">
+        <source>profile.proj</source>
+        <target state="new">profile.proj</target>
+        <note></note>
+      </trans-unit>
+      <trans-unit id="ProfileProjOptionDescription">
+        <source>The list of packages to be excluded from publish</source>
+        <target state="new">The list of packages to be excluded from publish</target>
+        <note></note>
+      </trans-unit>
     </body>
   </file>
 </xliff>
