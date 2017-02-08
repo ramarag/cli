@@ -6,56 +6,49 @@ using NuGet.Frameworks;
 
 namespace Microsoft.DotNet.Tools.Test.Utilities
 {
-    public sealed class PublishCommand : TestCommand
+    public sealed class CacheCommand : TestCommand
     {
         private string _framework;
         private string _output;
         private string _runtime;
-        private string _profileproj;
 
-        public PublishCommand()
+        public CacheCommand()
             : base("dotnet")
         {
         }
 
-        public PublishCommand WithFramework(string framework)
+        public CacheCommand WithFramework(string framework)
         {
             _framework = framework;
             return this;
         }
 
-        public PublishCommand WithFramework(NuGetFramework framework)
+        public CacheCommand WithFramework(NuGetFramework framework)
         {
             return WithFramework(framework.GetShortFolderName());
         }
 
-        public PublishCommand WithOutput(string output)
+        public CacheCommand WithOutput(string output)
         {
             _output = output;
             return this;
         }
 
-        public PublishCommand WithRuntime(string runtime)
+        public CacheCommand WithRuntime(string runtime)
         {
             _runtime = runtime;
             return this;
         }
 
-        public PublishCommand WithProFileProject(string profileproj)
-        {
-            _profileproj = profileproj;
-            return this;
-        }
-
         public override CommandResult Execute(string args = "")
         {
-            args = $"publish {BuildArgs()} {args}";
+            args = $"cache {BuildArgs()} {args}";
             return base.Execute(args);
         }
 
         public override CommandResult ExecuteWithCapturedOutput(string args = "")
         {
-            args = $"publish {BuildArgs()} {args}";
+            args = $"cache {BuildArgs()} {args}";
             return base.ExecuteWithCapturedOutput(args);
         }
 
@@ -64,7 +57,6 @@ namespace Microsoft.DotNet.Tools.Test.Utilities
             return string.Join(" ", 
                 FrameworkOption,
                 OutputOption,
-                ProfileProjOption,
                 RuntimeOption);
         }
 
@@ -73,7 +65,5 @@ namespace Microsoft.DotNet.Tools.Test.Utilities
         private string OutputOption => string.IsNullOrEmpty(_output) ? "" : $"-o {_output}";
 
         private string RuntimeOption => string.IsNullOrEmpty(_runtime) ? "" : $"-r {_runtime}";
-
-        private string ProfileProjOption => string.IsNullOrEmpty(_profileproj) ? "" : $"--profile {_profileproj}";
     }
 }

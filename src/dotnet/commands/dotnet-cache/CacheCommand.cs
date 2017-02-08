@@ -34,7 +34,7 @@ namespace Microsoft.DotNet.Tools.Cache
         {
             var msbuildArgs = new List<string>();
 
-            if (!string.IsNullOrEmpty(ProjectArgument))
+            if (string.IsNullOrEmpty(ProjectArgument))
             {
                 throw new InvalidOperationException(LocalizableStrings.SpecifyEntries);
             }
