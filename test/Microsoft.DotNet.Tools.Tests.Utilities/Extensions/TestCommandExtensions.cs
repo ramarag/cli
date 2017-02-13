@@ -13,17 +13,29 @@ namespace Microsoft.DotNet.Tools.Test.Utilities
 {
     public static class TestCommandExtensions
     {
+        public static TCommand SetUserProfile<TCommand>(this TCommand subject, string userProfileDirectory) where TCommand : TestCommand
+        {
+            string userProfileDirectoryName = "HOME";
+            if (RuntimeEnvironment.OperatingSystemPlatform == Platform.Windows)
+            {
+                userDirectory = "USERPROFILE";
+            }
+
+            subject.WithEnvironmentVariable(userProfileDirectoryName, userProfileDirectory);
+            return subject;
+        }
+
         public static TCommand WithWorkingDirectory<TCommand>(this TCommand subject, string workingDirectory) where TCommand : TestCommand
         {
             subject.WorkingDirectory = workingDirectory;
-
+            subject.SetUserProfile(Path.Combine(workingDirectory, "userprofile"));
             return subject;
         }
 
         public static TCommand WithWorkingDirectory<TCommand>(this TCommand subject, DirectoryInfo workingDirectory) where TCommand : TestCommand
         {
             subject.WorkingDirectory = workingDirectory.FullName;
-            
+            subject.SetUserProfile(Path.Combine(workingDirectory.ToString(), "userprofile"));
             return subject;
         }
         
